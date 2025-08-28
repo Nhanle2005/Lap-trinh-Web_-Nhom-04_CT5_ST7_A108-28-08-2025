@@ -26,15 +26,16 @@ public class DB  {
                 System.out.println("Kết nối MySQL thành công!");
 
                 try (Statement stmt = conn.createStatement()) {
-                    String sql = "SELECT id, username, email FROM users";
+                    String sql = "SELECT id, username, password, email FROM users";
                     ResultSet rs = stmt.executeQuery(sql);
 
                     System.out.println("Danh sách users:");
                     while (rs.next()) {
                         int id = rs.getInt("id");
                         String username = rs.getString("username");
+                        String password = rs.getString("password");
                         String email = rs.getString("email");
-                        System.out.println("ID: " + id + " | Username: " + username + " | Email: " + email);
+                        System.out.println("ID: " + id + " | Username: " + username + "| Password: " + password + "| Email: " + email);
                     }
                 }
 

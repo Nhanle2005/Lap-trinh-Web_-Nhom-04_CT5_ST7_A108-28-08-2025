@@ -1,4 +1,3 @@
-
 package dao;
 
 import model.User;
@@ -12,27 +11,30 @@ public class UserDaoImpl implements UserDao {
     ResultSet rs;
 
     @Override
-    public User get(String username) {
-        String sql = "SELECT * FROM users WHERE username = ?";
+    public User login(String username, String password) {
+        String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
         try {
             conn = DB.getConnection();
             ps = conn.prepareStatement(sql);
             ps.setString(1, username);
+            ps.setString(2, password);
             rs = ps.executeQuery();
             if (rs.next()) {
                 User user = new User();
                 user.setId(rs.getInt("id"));
-                user.setEmail(rs.getString("email"));
                 user.setUserName(rs.getString("username"));
-                user.setFullName(rs.getString("fullname"));
                 user.setPassWord(rs.getString("password"));
+                user.setFullName(rs.getString("fullname"));
+                user.setEmail(rs.getString("email"));
                 user.setRoleid(rs.getInt("roleid"));
-                user.setPhone(rs.getString("phone"));
-                user.setCreatedDate(rs.getDate("createdDate"));
                 return user;
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try { if(rs != null) rs.close(); } catch(Exception ignored) {}
+            try { if(ps != null) ps.close(); } catch(Exception ignored) {}
+            try { if(conn != null) conn.close(); } catch(Exception ignored) {}
         }
         return null;
     }
