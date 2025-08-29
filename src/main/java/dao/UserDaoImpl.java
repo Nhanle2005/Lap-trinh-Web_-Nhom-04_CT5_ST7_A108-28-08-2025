@@ -38,4 +38,47 @@ public class UserDaoImpl implements UserDao {
         }
         return null;
     }
+    
+    @Override
+    public boolean saveUser(User user) {
+        String sql = "INSERT INTO users(username, password, email, created_at, roleid, fullname) VALUES (?, ?, ?, NOW(), ?, ?)";
+        try (Connection conn = DB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setString(1, user.getUserName());
+            ps.setString(2, user.getPassWord());
+            ps.setString(3, user.getEmail());
+            ps.setInt(4, user.getRoleid());       
+            ps.setString(5, user.getFullName());  
+
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    @Override
+    public User getUserByUsername(String username) {
+        String sql = "SELECT * FROM users WHERE username = ?";
+        try (Connection conn = DB.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setUserName(rs.getString("username"));
+                user.setPassWord(rs.getString("password"));
+                user.setEmail(rs.getString("email"));
+                return user;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 }
+
